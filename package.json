@@ -1,0 +1,20 @@
+{
+  "name": "todonm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "concurrently": "^4.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "concurrently \"cd todonm-server && node index.js\" \"cd todonm-client && npm start\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arnms/TODOnm.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

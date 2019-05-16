@@ -1,0 +1,15 @@
+form {
+    padding: 16px 24px;
+}
+
+.form-check-inline {
+    margin-bottom: 8px;
+}
+
+.form-button-box {
+    text-align: right;
+}
+
+.form-button-box > button:last-child {
+    margin-left: 8px;
+}

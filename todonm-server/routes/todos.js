@@ -45,9 +45,13 @@ router.post('/', (req, res) => {
     }
 
     let item = req.body;
-    let deadline = new Date(req.body.deadline);
     item.id = newId;
-    item.deadline = deadline.toLocaleDateString();
+
+    if(req.body.deadline !== '') {
+        let deadline = new Date(req.body.deadline);
+        item.deadline = deadline.toLocaleDateString();
+    }
+
     todos.push(item);
 
     res.status(201).json(item);
@@ -61,9 +65,14 @@ router.put('/:id', (req, res) => {
 
     if(item) {
         let updateItem = req.body;
-        let deadline = new Date(req.body.deadline);
         updateItem.id = item.id;
-        updateItem.deadline = deadline.toLocaleDateString();
+
+        if(req.body.deadline !== '') {
+            updateItem.deadline = deadline.toLocaleDateString();
+        } else {
+            delete updateItem[deadline];
+        }
+
         todos.splice(todos.indexOf(item), 1, updateItem);
 
         res.sendStatus(204);
