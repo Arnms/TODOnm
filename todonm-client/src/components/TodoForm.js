@@ -8,20 +8,33 @@ class TodoForm extends Component {
         super(props);
 
         this.state = {
+            item: {},
             deadlineChecked: true
         };
 
-        if(this.props.modalType === 'edit') {
-            this.refs.title.value = this.props.modalData.title;
-            this.refs.content.value = this.props.modalData.content;
-            this.refs.daedline.value = this.props.modalData.deadline;
-            this.refs.deadlineChecked.value = this.props.modalData.deadlineChecked;
-            this.setState({ deadlineChecked: !this.props.daedlineChecked });
-            this.refs.priority.value = this.props.modalData.priority;
+        if(this.props.modalType === 'update') {
+            this.state.item = this.props.modalData;
+
+            const date = new Date(this.props.modalData.deadline);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            this.state.item.deadline =
+                year.toString() + '-' +
+                (month > 9 ? '' : '0') + month + "-" +
+                (day > 9 ? '' : '0') + day;
+
+            if(this.state.item.deadline === undefined || this.state.item.deadline === '') {
+                this.state.deadlineChecked = true;
+            } else {
+                this.state.deadlineChecked = false;
+            }
         }
 
         this.isEnableDeadline = this.isEnableDeadline.bind(this);
-        this.createTodoForm = this.createTodoForm.bind(this);
+        this.createTodo = this.createTodo.bind(this);
+        this.updateTodo = this.updateTodo.bind(this);
     }
 
     isEnableDeadline(event) {
@@ -33,7 +46,7 @@ class TodoForm extends Component {
         });
     }
 
-    createTodoForm(event) {
+    createTodo(event) {
         event.preventDefault();
 
         const formData = {};
@@ -41,6 +54,8 @@ class TodoForm extends Component {
         for(const field in this.refs) {
             formData[field] = this.refs[field].value;
         }
+
+        formData['completed'] = this.props.modalData.completed;
 
         axios.post('http://localhost:3001/todos/', formData)
             .then((res) => {
@@ -51,21 +66,39 @@ class TodoForm extends Component {
             });
     }
 
+    updateTodo(event) {
+        event.preventDefault();
+
+        const formData = {};
+
+        for(const field in this.refs) {
+            formData[field] = this.refs[field].value;
+        }
+
+        axios.put('http://localhost:3001/todos/' + this.props.modalData.id, formData)
+            .then((res) => {
+                this.props.onModalClose();
+            })
+            .catch((err) => {
+                console.log('error');
+            });
+    }
+
     render() {
         return (
-            <Form onSubmit={this.createTodoForm} ref={this.forms}>
+            <Form onSubmit={this.props.modalType === 'update' ? this.updateTodo : this.createTodo} ref={this.forms}>
                 <Form.Row>
                     <Form.Group as={Col} xl lg md sm xs controlId='TodoTitle'>
                         <Form.Label>Title</Form.Label>
-                        <Form.Control name='title' ref='title' required type='text' placeholder='TODO Title' />
+                        <Form.Control name='title' ref='title' required type='text' placeholder='Title' defaultValue={this.props.modalType === 'update' ? this.state.item.title : ''}/>
                     </Form.Group>
                     <Form.Group as={Col} xl lg md sm xs controlId='TodoDeadline'>
-                        <Form.Check inline label='Deadline' type='checkbox' id='deadlineCheck' onChange={this.isEnableDeadline} />
-                        <Form.Control name='deadline' ref='deadline' type='date' disabled={this.state.deadlineChecked} />
+                        <Form.Check inline label='Deadline' type='checkbox' id='deadlineCheck' onChange={this.isEnableDeadline} checked={!this.state.deadlineChecked} />
+                        <Form.Control name='deadline' ref='deadline' type='date' disabled={this.state.deadlineChecked} defaultValue={this.props.modalType === 'update' ? this.state.item.deadline : ''} />
                     </Form.Group>
                     <Form.Group as={Col} xl lg md sm xs controlId='TodoPriority'>
                         <Form.Label>Priority</Form.Label>
-                        <Form.Control name='priority' ref='priority' as='select'>
+                        <Form.Control name='priority' ref='priority' as='select' defaultalue={this.props.modalType === 'update' ? this.state.item.priority : ''}>
                             <option value='1'>P1 (Do)</option>
                             <option value='2'>P2 (Decide)</option>
                             <option value='3'>P3 (Delegate)</option>
@@ -76,7 +109,7 @@ class TodoForm extends Component {
                 <Form.Row>
                     <Form.Group as={Col} controlId='TodoContent'>
                         <Form.Label>Content</Form.Label>
-                        <Form.Control name='content' ref='content' required as='textarea' rows='2' />
+                        <Form.Control name='content' ref='content' required as='textarea' rows='2' defaultValue={this.props.modalType === 'update' ? this.state.item.content : ''} />
                     </Form.Group>
                 </Form.Row>
                 <Form.Row>

@@ -8,7 +8,7 @@ const router = express.Router();
     - title
     - content
     - deadline
-    - priority (3: normal, 2: warning, 1: danger)
+    - priority (4: Delete, 3: Delegate, 2: Decide, 1: Do)
     - completed (true / false)
 */
 const todos = [
@@ -68,7 +68,15 @@ router.put('/:id', (req, res) => {
         updateItem.id = item.id;
 
         if(req.body.deadline !== '') {
-            updateItem.deadline = deadline.toLocaleDateString();
+            let date = new Date(req.body);
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            
+            updateItem.deadline =
+                year.toString() + '-' +
+                (month > 9 ? '' : '0') + month + "-" +
+                (day > 9 ? '' : '0') + day;
         } else {
             delete updateItem[deadline];
         }

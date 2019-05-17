@@ -1,0 +1,51 @@
+.list-group-item {
+    width: 100%;
+}
+
+.item-header {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.item-header > .text-muted {
+    margin-left: 12px;
+    font-size: 80%;
+}
+
+.item-body {
+    color: #222;
+}
+
+.buttonGroup {
+    text-align: center;
+}
+
+.buttonGroup button:first-child {
+    background-color: #757575;
+}
+
+.buttonGroup button:first-child:hover {
+    background-color: #424242;
+}
+
+.buttonGroup button:last-child {
+    background-color: #e57373;
+}
+
+.buttonGroup button:last-child:hover {
+    background-color: #f44336;
+}
+
+
+.icon {
+    margin: 0 !important;
+}
+
+i.check {
+    margin-right: 4px !important;
+    color: #4caf50;
+}
+
+i.outline {
+    color: #f44336;
+}
