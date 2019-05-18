@@ -13,23 +13,10 @@ class TodoItem extends Component {
             item: this.props.item,
             modalShow: false,
             modalType: '',
-            completed: false,
-            deadlineText: ''
+            completed: false
         };
 
         this.completed = this.props.item.completed;
-
-        if(!this.completed) {
-            if(this.state.item.deadline === undefined || this.state.item.deadline === '') {
-                this.state.deadlineText = <span className='text-muted'>마감기한 없음</span>;
-            } else {
-                if(new Date(this.state.item.deadline) >= new Date()) {
-                    this.state.deadlineText = <span className='text-muted'>{this.state.item.deadline} 까지</span>;
-                } else {
-                    this.state.deadlineText = <span className='text-danger'>마감기한이 지났습니다.</span>;
-                }
-            }
-        }
 
         this.deleteTodo = this.deleteTodo.bind(this);
         this.checkCompleted = this.checkCompleted.bind(this);
@@ -113,7 +100,7 @@ class TodoItem extends Component {
                                 <i className={this.state.item.completed ? 'check circle icon' : 'check circle outline icon'} onClick={this.checkCompleted}></i>
                             </OverlayTrigger>
                             {this.state.item.title}
-                            {this.state.deadlineText}
+                            <span className='text-muted'>{this.state.item.deadline === undefined || this.state.item.deadline === '' ? '마감기한 없음' : this.state.item.deadline + '까지'}</span>
                         </div>
                         <div className='item-body'>
                             {this.state.item.content}
