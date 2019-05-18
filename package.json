@@ -8,7 +8,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "concurrently \"cd todonm-server && node index.js\" \"cd todonm-client && npm start\""
+    "start": "concurrently \"cd todonm-server && node index.js\" \"cd todonm-client && npm start\"",
+    "install": "concurrently \"cd todonm-server && npm install\" \"cd todonm-client && npm install\""
   },
   "repository": {
     "type": "git",
