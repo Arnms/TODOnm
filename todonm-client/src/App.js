@@ -9,7 +9,9 @@ class App extends Component {
       <div className="App">
         <h1>TODOnm</h1>
         
-        <Todolist />
+        <div className='container'>
+          <Todolist />
+        </div>
       </div>
     );
   }

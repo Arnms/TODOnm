@@ -13,10 +13,10 @@ const router = express.Router();
 */
 const todos = [
     { id: 1, title: '첫 번째 할일', content: '첫 번째 내용', deadline: undefined, priority: 3, completed: false },
-    { id: 2, title: '두 번째 할일', content: '두 번째 내용', deadline: new Date("2019-05-14").toLocaleDateString(), priority: 1, completed: false },
+    { id: 2, title: '두 번째 할일', content: '두 번째 내용', deadline: "2019-05-14", priority: 1, completed: false },
     { id: 3, title: '세 번째 할일', content: '세 번째 내용', deadline: undefined, priority: 3, completed: false },
     { id: 4, title: '네 번째 할일', content: '네 번째 내용', deadline: undefined, priority: 3, completed: false },
-    { id: 5, title: '다섯 번째 할일', content: '다섯 번째 내용', deadline: new Date("2019-05-14").toLocaleDateString(), priority: 2, completed: false }
+    { id: 5, title: '다섯 번째 할일', content: '다섯 번째 내용', deadline: "2019-05-14", priority: 2, completed: false }
 ];
 
 router.get('/', function (req, res) {
@@ -64,11 +64,13 @@ router.put('/:id', (req, res) => {
     });
 
     if(item) {
-        let updateItem = req.body;
+        let updateItem = {};
+        updateItem = req.body;
         updateItem.id = item.id;
+        updateItem.priority = parseInt(req.body.priority);
 
-        if(req.body.deadline !== '') {
-            let date = new Date(req.body);
+        if(updateItem.deadline !== '' || updateItem.deadline !== undefined) {
+            let date = new Date(updateItem.deadline);
             let year = date.getFullYear();
             let month = date.getMonth() + 1;
             let day = date.getDate();
@@ -78,7 +80,7 @@ router.put('/:id', (req, res) => {
                 (month > 9 ? '' : '0') + month + "-" +
                 (day > 9 ? '' : '0') + day;
         } else {
-            delete updateItem[deadline];
+            delete updateItem.deadline;
         }
 
         todos.splice(todos.indexOf(item), 1, updateItem);

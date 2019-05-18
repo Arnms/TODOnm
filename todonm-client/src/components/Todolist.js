@@ -50,14 +50,14 @@ class Todolist extends Component {
             <Button variant='primary' className='createTodoBtn' onClick={this.createModalShow}><i className='plus icon'></i></Button>
 
             <ListGroup>
-                {this.state.todos.map((item) => {
-                    return (<TodoItem item={item} fetchTodoList={this.fetchTodoList} />)
+                {this.state.todos.map((item, i) => {
+                    return (<TodoItem key={i} item={item} fetchTodoList={this.fetchTodoList} isAction={false} />)
                 })}
             </ListGroup>
 
             <Modal size='lg' show={this.state.modalShow} onHide={this.modalClose}>
                 <Modal.Body>
-                    <TodoForm modalType={this.state.modalType} onModalClose={this.modalClose} />
+                    <TodoForm modalType={this.state.modalType} fetchTodoList={this.fetchTodoList} onModalClose={this.modalClose}  />
                 </Modal.Body>
             </Modal>
             </>

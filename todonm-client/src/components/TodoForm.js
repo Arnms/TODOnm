@@ -15,26 +15,30 @@ class TodoForm extends Component {
         if(this.props.modalType === 'update') {
             this.state.item = this.props.modalData;
 
-            const date = new Date(this.props.modalData.deadline);
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            
-            this.state.item.deadline =
-                year.toString() + '-' +
-                (month > 9 ? '' : '0') + month + "-" +
-                (day > 9 ? '' : '0') + day;
-
             if(this.state.item.deadline === undefined || this.state.item.deadline === '') {
                 this.state.deadlineChecked = true;
             } else {
                 this.state.deadlineChecked = false;
+
+                const date = new Date(this.props.modalData.deadline);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                
+                this.state.item.deadline =
+                    year.toString() + '-' +
+                    (month > 9 ? '' : '0') + month + "-" +
+                    (day > 9 ? '' : '0') + day;
             }
         }
 
         this.isEnableDeadline = this.isEnableDeadline.bind(this);
         this.createTodo = this.createTodo.bind(this);
         this.updateTodo = this.updateTodo.bind(this);
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({ item: props.modalData });
     }
 
     isEnableDeadline(event) {
@@ -55,10 +59,11 @@ class TodoForm extends Component {
             formData[field] = this.refs[field].value;
         }
 
-        formData['completed'] = this.props.modalData.completed;
-
+        formData.priority = parseInt(formData.priority);
+        
         axios.post('http://localhost:3001/todos/', formData)
             .then((res) => {
+                this.props.fetchTodoList();
                 this.props.onModalClose();
             })
             .catch((err) => {
@@ -75,12 +80,30 @@ class TodoForm extends Component {
             formData[field] = this.refs[field].value;
         }
 
+        formData.id = this.props.modalData.id;
+        formData.completed = this.props.modalData.completed;
+
+        if(this.state.deadlineChecked) {
+            delete formData.deadline;
+        } else {
+            const date = new Date(formData.deadline);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            formData.deadline =
+                year.toString() + '-' +
+                (month > 9 ? '' : '0') + month + "-" +
+                (day > 9 ? '' : '0') + day;
+        }
+
         axios.put('http://localhost:3001/todos/' + this.props.modalData.id, formData)
             .then((res) => {
+                this.props.fetchTodoList();
                 this.props.onModalClose();
             })
             .catch((err) => {
-                console.log('error');
+                console.log(err);
             });
     }
 
@@ -98,7 +121,7 @@ class TodoForm extends Component {
                     </Form.Group>
                     <Form.Group as={Col} xl lg md sm xs controlId='TodoPriority'>
                         <Form.Label>Priority</Form.Label>
-                        <Form.Control name='priority' ref='priority' as='select' defaultalue={this.props.modalType === 'update' ? this.state.item.priority : ''}>
+                        <Form.Control name='priority' ref='priority' as='select' defaultValue={this.props.modalType === 'update' ? this.props.modalData.priority : 1}>
                             <option value='1'>P1 (Do)</option>
                             <option value='2'>P2 (Decide)</option>
                             <option value='3'>P3 (Delegate)</option>
