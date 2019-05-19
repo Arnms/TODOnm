@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import TodoForm from './TodoForm';
 import TodoItem from './TodoItem';
+import TodoAlert from './TodoAlert';
 
 class Todolist extends Component {
     constructor(props) {
@@ -14,6 +15,7 @@ class Todolist extends Component {
             todos: [],
             modalShow: false,
             modalType: '',
+            alertList: []
         };
 
         this.fetchTodoList();
@@ -27,6 +29,12 @@ class Todolist extends Component {
         axios.get('http://localhost:3001/todos/')
         .then((res) => {
             this.setState({ todos: res.data });
+
+            const aList = this.state.todos.filter((item) => {
+                return (new Date(item.deadline) < new Date()) && !item.completed;
+            });
+
+            this.setState({ alertList: aList });
         })
         .catch((err) => {
             console.log('fetch error');
@@ -47,11 +55,17 @@ class Todolist extends Component {
     render() {
         return (
             <>
+            <div className='alertGroup'>
+                {this.state.alertList.map((item, i) => {
+                    return (<TodoAlert key={i} item={item} />);
+                })}
+            </div>
+
             <Button variant='primary' className='createTodoBtn' onClick={this.createModalShow}><i className='plus icon'></i></Button>
 
             <ListGroup>
                 {this.state.todos.map((item, i) => {
-                    return (<TodoItem key={i} item={item} fetchTodoList={this.fetchTodoList} isAction={false} />)
+                    return (<TodoItem key={i} item={item} fetchTodoList={this.fetchTodoList} isAction={false} />);
                 })}
             </ListGroup>
 

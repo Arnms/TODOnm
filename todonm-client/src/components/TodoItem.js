@@ -100,7 +100,7 @@ class TodoItem extends Component {
                                 <i className={this.state.item.completed ? 'check circle icon' : 'check circle outline icon'} onClick={this.checkCompleted}></i>
                             </OverlayTrigger>
                             {this.state.item.title}
-                            <span className='text-muted'>{this.state.item.deadline === undefined || this.state.item.deadline === '' ? '마감기한 없음' : this.state.item.deadline + '까지'}</span>
+                            <span className='text-muted'>{this.state.item.completed ? '완료' : this.state.item.deadline === undefined || this.state.item.deadline === '' ? '마감기한 없음' : this.state.item.deadline + '까지'}</span>
                         </div>
                         <div className='item-body'>
                             {this.state.item.content}

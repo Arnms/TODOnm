@@ -11,3 +11,12 @@ Button.createTodoBtn {
     border-radius: 50%;
     z-index: 999;
 }
+
+.alertGroup {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    max-width: 20vw;
+    width: 100%;
+    z-index: 998;
+}
